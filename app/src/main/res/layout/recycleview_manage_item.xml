@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:layout_gravity="center" android:padding="10px">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_gravity="center"
+        android:src="@mipmap/loading"
+        android:scaleType="fitXY"
+        android:id="@+id/imageView_face_item"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_gravity="center"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:id="@+id/recyclerView_manage_item_face_name"
+        android:text=""/>
+
+</LinearLayout>

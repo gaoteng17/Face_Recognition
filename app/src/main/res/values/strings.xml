@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">人脸识别考勤机</string>
+    <string name="main_txt_title">人脸识别签到系统Demo</string>
+    <string name="button_sign_in">签到打卡</string>
+    <string name="button_register">注册新用户</string>
+    <string name="login_textView2_username_text">ID:</string>
+    <string name="login_editText3_username_hint">数字组合</string>
+    <string name="login_editText3_password_hint">任意字母、数字或特殊符号</string>
+    <string name="login_checkBox_remember_password_text">记住密码</string>
+    <string name="login_textView_tip_text">温馨提示：若该ID尚未注册，将自动为您注册</string>
+    <string name="login_imageButton_login_contentDescription">登录</string>
+    <string name="login_textView4_password_text">密码:</string>
+    <string name="button_manage">管理已注册用户</string>
+    <string name="recycleView_textView_face_name_text">姓名：</string>
+    <string name="recycleView_textView_register_time_text">注册时间：</string>
+    <string name="imageview_face_detail_head">imageView_face_detail_head</string>
+    <string name="textView_face_detail_register_time_text">注册时间：</string>
+    <string name="button_face_detail_text">编辑</string>
+    <string name="textView_tips_text">温馨提示：</string>
+    <string name="textView_face_detail_tip1">1.多张图片有利于提高签到成功率！</string>
+    <string name="textView_face_detail_tip2">2.人脸库中每人可存储最多5张图片</string>
+    <string name="menu_item_about">关于</string>
+    <string name="button_face_detail_edit">button_face_detail_edit</string>
+    <string name="menu_item_delete_user">删除此人</string>
+
+    <string name="cube_ptr_pull_down">再使点劲下拉</string>
+    <string name="cube_ptr_pull_down_to_refresh">下拉刷新</string>
+    <string name="cube_ptr_release_to_refresh">释放立即刷新</string>
+    <string name="cube_ptr_refreshing">更新列表中…</string>
+    <string name="cube_ptr_refresh_complete">刷新成功</string>
+
+    <string name="cube_ptr_last_update">上次更新:&#160;</string>
+    <string name="cube_ptr_seconds_ago">&#160;秒之前</string>
+    <string name="cube_ptr_minutes_ago">&#160;分钟之前</string>
+    <string name="cube_ptr_hours_ago">&#160;小时之前</string>
+    <string name="button_sign_log">查看签到记录</string>
+    <string name="sign_log_list_end_tip">别拉了！我是有底线的！</string>
+    <string name="menu_only_signed_text">仅显示已签到</string>
+    <string name="menu_only_no_signed_text">仅显示未签到</string>
+    <string name="menu_show_all_text">显示所有</string>
+</resources>
