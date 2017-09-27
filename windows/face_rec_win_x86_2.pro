@@ -86,3 +86,6 @@ LIBS += -LE:\opencv_build1\install\x86\vc14\lib \
         -lopencv_ximgproc330d           \
         -lopencv_xobjdetect330d         \
         -lopencv_xphoto330d             \
+
+RESOURCES += \
+    myresourse.qrc

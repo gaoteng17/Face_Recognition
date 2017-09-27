@@ -2,6 +2,8 @@
 #include <iostream>  
 #include <string>  
 #include <mysql.h> 
+#include <direct.h>
+#include <fstream>
 using namespace std;
 
 #pragma comment(lib, "ws2_32.lib")  
@@ -40,7 +42,7 @@ bool addinfo(string userid, string username, string userdir) {
 
 
 	//连接数据库  
-	if (NULL == mysql_real_connect(&mydata, "localhost", "root", "950313", "database1", 3306, NULL, 0)){
+	if (NULL == mysql_real_connect(&mydata, "localhost", "root", "1995", "face_recogition", 3306, NULL, 0)){
 		//这里的地址，用户名，密码，端口可以根据自己本地的情况更改  
 		cout << "mysql_real_connect() failed" << endl;
 		return false;
@@ -55,6 +57,39 @@ bool addinfo(string userid, string username, string userdir) {
 		mysql_close(&mydata);
 		return false;
 	}
+
+
+	string fn_csv = "at.txt";
+
+	_mkdir(fn_csv.c_str());
+
+	std::ofstream tagfile(fn_csv);
+
+	MYSQL_RES *result = NULL;
+	sqlstr = "SELECT student_id, userdir FROM information";
+	if (mysql_query(&mydata, sqlstr.c_str())) {
+		cout << "addinfo() insert data failed" << endl;
+		mysql_close(&mydata);
+		return false;
+	}
+	else {
+
+		//一次性取得数据集  
+		result = mysql_store_result(&mydata);
+
+		//打印各行  
+		MYSQL_ROW row = NULL;
+		row = mysql_fetch_row(result);
+		while (NULL != row) {
+			for (int i = 1; i <= 20; i++) {
+				tagfile << row[1] << "\\pic" << i << ".jpg" << ";" << row[0] << ";" << endl;
+			}
+			row = mysql_fetch_row(result);
+		}
+
+	}
+
+	tagfile.close();
 
 	return true;
 }
@@ -76,7 +111,7 @@ bool addrecord(string userid, string name) {
 	//初始化数据结构  
 	if (NULL == mysql_init(&mydata)) {
 		cout << "mysql_init() failed" << endl;
-		//system("pause");
+
 		return false;
 	}
 
@@ -89,7 +124,7 @@ bool addrecord(string userid, string name) {
 
 
 	//连接数据库  
-	if (NULL == mysql_real_connect(&mydata, "localhost", "root", "950313", "database1", 3306, NULL, 0)) {
+	if (NULL == mysql_real_connect(&mydata, "localhost", "root", "1995", "face_recogition", 3306, NULL, 0)) {
 		//这里的地址，用户名，密码，端口可以根据自己本地的情况更改  
 		cout << "mysql_real_connect() failed" << endl;
 		return false;

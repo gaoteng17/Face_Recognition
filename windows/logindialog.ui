@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">border-image: url(:/myimage/myimage/bbb.jpg)</string>
+  </property>
   <widget class="QPushButton" name="loginBtn">
    <property name="geometry">
     <rect>
@@ -21,6 +24,9 @@
      <width>75</width>
      <height>23</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: rgb(255, 255, 255)</string>
    </property>
    <property name="text">
     <string>登陆</string>
@@ -35,6 +41,9 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: rgb(255, 255, 255)</string>
+   </property>
    <property name="text">
     <string>退出</string>
    </property>
@@ -44,12 +53,15 @@
     <rect>
      <x>80</x>
      <y>90</y>
-     <width>54</width>
-     <height>12</height>
+     <width>51</width>
+     <height>31</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/myimage/myimage/User.png)</string>
+   </property>
    <property name="text">
-    <string>用户名：</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -57,12 +69,15 @@
     <rect>
      <x>80</x>
      <y>130</y>
-     <width>54</width>
-     <height>12</height>
+     <width>51</width>
+     <height>31</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/myimage/myimage/Lock.png)</string>
+   </property>
    <property name="text">
-    <string>密码：</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLineEdit" name="usrLineEdit">
@@ -73,6 +88,9 @@
      <width>171</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: rgb(255, 255, 255)</string>
    </property>
    <property name="placeholderText">
     <string>请输入用户名</string>
@@ -86,6 +104,9 @@
      <width>171</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: rgb(255, 255, 255)</string>
    </property>
    <property name="echoMode">
     <enum>QLineEdit::Password</enum>

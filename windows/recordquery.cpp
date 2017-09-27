@@ -129,7 +129,7 @@ bool face_recoquery(string student_id) {
 
 
 	//连接数据库  
-	if (NULL == mysql_real_connect(&mydata, "localhost", "root", "950313", "database1", 3306, NULL, 0)) {
+	if (NULL == mysql_real_connect(&mydata, "localhost", "root", "1995", "face_recogition", 3306, NULL, 0)) {
 		//这里的地址，用户名，密码，端口可以根据自己本地的情况更改  
 		cout << "mysql_real_connect() failed" << endl;
 		return false;
@@ -211,12 +211,65 @@ bool face_recoquery(string student_id) {
 		mysql_close(&mydata);
 		return -1;
 	}
-#ifdef STEPBYSTEP  
-	system("pause");
-#endif  
+
 	mysql_close(&mydata);
 	mysql_server_end();
 	cout << student_id, "\n", result_a;
 	if (!addrecord(student_id, result_a)) return 0;
 	return true;
+}
+
+
+string find_name(string student_id)
+{
+
+	//必备的一个数据结构  
+	MYSQL mydata;
+
+	//初始化数据库  
+	if (mysql_library_init(0, NULL, NULL)) {
+		cout << "mysql_library_init() failed" << endl;
+		return false;
+	}
+
+	//初始化数据结构  
+	if (NULL == mysql_init(&mydata)) {
+		cout << "mysql_init() failed" << endl;
+		//system("pause");
+		return false;
+	}
+
+	//在连接数据库之前，设置额外的连接选项  
+	//可以设置的选项很多，这里设置字符集，否则无法处理中文  
+	if (mysql_options(&mydata, MYSQL_SET_CHARSET_NAME, "gbk")) {
+		cout << "mysql_options() failed" << endl;
+		return false;
+	}
+
+
+
+	//连接数据库  
+	if (NULL == mysql_real_connect(&mydata, "localhost", "root", "1995", "face_recogition", 3306, NULL, 0)) {
+		//这里的地址，用户名，密码，端口可以根据自己本地的情况更改  
+		cout << "mysql_real_connect() failed" << endl;
+		return false;
+	}
+
+	MYSQL_RES *result;
+
+	string sqlstr;
+	string result_a;
+	sqlstr = "select stuName from information where student_id=";//通过收到的学号找到相应的名字
+	sqlstr += student_id;
+	result = NULL;
+	mysql_query(&mydata, sqlstr.c_str());
+	result = mysql_store_result(&mydata);
+		
+
+	MYSQL_ROW row = NULL;
+	row = mysql_fetch_row(result);
+
+	result_a = row[0]; 
+				
+	return result_a;
 }

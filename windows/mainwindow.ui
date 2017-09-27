@@ -13,15 +13,21 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">border-image: url(:/myimage/myimage/bbb.jpg)</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>80</y>
+      <x>150</x>
+      <y>90</y>
       <width>261</width>
       <height>281</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <property name="text">
      <string/>
@@ -39,6 +45,9 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QPushButton" name="regBtn">
+       <property name="styleSheet">
+        <string notr="true">border-image: rgb(255, 255, 255)</string>
+       </property>
        <property name="text">
         <string>注册</string>
        </property>
@@ -46,6 +55,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="logBtn">
+       <property name="styleSheet">
+        <string notr="true">border-image: rgb(255, 255, 255)</string>
+       </property>
        <property name="text">
         <string>登陆</string>
        </property>

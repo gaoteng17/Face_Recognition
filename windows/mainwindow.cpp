@@ -4,12 +4,13 @@
 #include "train.h"
 #include "addinfo.h"
 #include"recordquery.h"
-#include<opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 #include <direct.h>
 #include <QTimer>
 #include <QMessageBox>
 #include <QInputDialog>
 
+cv::Ptr<EigenFaceRecognizer> modelPCA;
 
 using namespace std;
 //using namespace cv;
@@ -22,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->label->setScaledContents(true);  //fit video to label area
 	infodlg = new InfoDialog;
 	connect(infodlg, SIGNAL(sendInfo(QString, QString)), this, SLOT(getInfo(QString, QString)));
-	connect(infodlg, SIGNAL(sendsignal()), this, SLOT(show()));
+	connect(infodlg, SIGNAL(sendsignal()), this, SLOT(showthiswindow()));
 
 }
 
@@ -62,31 +63,22 @@ QImage  Mat2QImage(cv::Mat cvImg)
 
 }
 
-
-
-void MainWindow::getInfo(QString name, QString id)
+void MainWindow::showthiswindow()
 {
 	this->show();
-	username = name.toStdString();
-	userid = id.toStdString();
-	if (capture.isOpened())
-		capture.release();     //decide if capture is already opened; if so,close it
-	capture.open(0);           //open the default camera
+	ui->regBtn->setEnabled(true);
+	ui->logBtn->setEnabled(true);
+}
 
-	cv::CascadeClassifier cascade;
-	cascade.load("lbpcascade_frontalface.xml");
+void MainWindow::nextFrame2()
+{
+	//TAKE PHOTO
 
-	_mkdir("photo");
 
-	int pic_num = 1;
-
-	string userdir = "photo\\\\" + userid;  //用户路径
-
-	_mkdir(userdir.c_str());  //创建该用户图片文件夹
-
-	while (1)
+	timer2->stop();
+	capture >> frame;
+	if (!frame.empty())
 	{
-		capture >> frame;
 		std::vector<cv::Rect> faces;
 		cv::Mat frame_gray;
 		cvtColor(frame, frame_gray, cv::COLOR_BGR2GRAY);
@@ -106,39 +98,75 @@ void MainWindow::getInfo(QString name, QString id)
 
 			string filename = cv::format("photo\\%d\\pic%d.jpg", atoi(userid.c_str()), pic_num);
 			cv::imwrite(filename, myFace);
-			cv::imshow(filename, myFace);
-			cv::waitKey(500);
-			cv::destroyWindow(filename);
+			//cv::imshow(filename, myFace);
+			//cv::waitKey(500);
+			//cv::destroyWindow(filename);
 			pic_num++;
-			if (pic_num == 21) break;
+			
 		}
-		image = Mat2QImage(frame);
-		ui->label->setPixmap(QPixmap::fromImage(image));
-
 	}
+	image = Mat2QImage(frame);
+	ui->label->setPixmap(QPixmap::fromImage(image));
+	timer2->start();
+
+	if (pic_num == 21)
+	{
+		timer2->stop();
+		capture.release();
+		ui->label->setText("registration success!");
+		train();
+		ui->regBtn->setEnabled(true);
+		ui->logBtn->setEnabled(true);
+	}
+	
+}
+
+void MainWindow::getInfo(QString name, QString id)
+{
+	this->show();
+	username = name.toStdString();
+	userid = id.toStdString();
+	if (capture.isOpened())
+		capture.release();     //decide if capture is already opened; if so,close it
+	capture.open(0);           //open the default camera
+
+	cascade.load("lbpcascade_frontalface.xml");
+
+	_mkdir("photo");
+
+	pic_num = 1;
+
+	string userdir = "photo\\\\" + userid;  //用户路径
+
+	_mkdir(userdir.c_str());  //创建该用户图片文件夹
+
+	if (capture.isOpened())
+	{
+		//rate= capture.get(CV_CAP_PROP_FPS);	//using when open a vedio file
+		capture >> frame;
+		if (!frame.empty())
+		{
+			cascade.load("lbpcascade_frontalface.xml");
+			image = Mat2QImage(frame);
+			ui->label->setPixmap(QPixmap::fromImage(image));
+			timer2 = new QTimer(this);
+			timer2->setInterval(1000 / 25);   //replace "30" by "rate",set timer match with FPS
+			connect(timer2, SIGNAL(timeout()), this, SLOT(nextFrame2()));
+			timer2->start();
+		}
+	}
+
+
 
 	//以下计划存入数据库，格式：用户id；用户姓名；用户图片路径
 	addinfo(userid, username, userdir);
 
-	//以下为csv标签文件，格式：路径；标签；
-	ofstream tagfile("at.txt", ios::app);
-	if (!tagfile) {
-		cout << "Open the file failure...\n";
-		exit(0);
-	}
-	for (int i = 1; i <= 20; i++)
-	{
-		tagfile << userdir << "\\pic" << i << ".jpg" << ";" << userid << ";" << endl;
-	}
-	tagfile.close();
-
-	ui->label->setText("registration success!");
-	capture.release();
-	train();
 }
 
 void MainWindow::nextFrame()
 {
+	//识别
+
 	if (cnt == 5)
 	{
 		timer->stop();
@@ -146,8 +174,23 @@ void MainWindow::nextFrame()
 		capture.release();
 		stringstream predictPCA_a;
 		predictPCA_a << predictPCA;
+		cv::String infor = "Name:\t" + find_name(predictPCA_a.str()) + ";\n" + "ID:\t" + predictPCA_a.str() + ".";
+		QMessageBox::StandardButton rb = QMessageBox::question(NULL, "Login Information", QString::fromStdString(infor), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		if (rb == QMessageBox::Yes)
+		{
+			//QMessageBox::aboutQt(NULL, "About Qt");
+			face_recoquery(predictPCA_a.str());      //此处需设置异常
+			ui->logBtn->setEnabled(true);
+			ui->regBtn->setEnabled(true);
+		}
+		if (rb == QMessageBox::No)
+		{
+			ui->label->setText("NULL!");
+			cnt = 0;
+			capture.open(0);
+			timer->start();
+		}
 
-		face_recoquery(predictPCA_a.str());      //此处需设置异常
 
 	}
 	capture >> frame;
@@ -155,10 +198,6 @@ void MainWindow::nextFrame()
 	{
 		cv::Mat edges;
 		cv::Mat gray;
-
-
-		cv::Ptr<cv::face::EigenFaceRecognizer> modelPCA = cv::Algorithm::load<cv::face::EigenFaceRecognizer>("MyFacePCAModel.xml");
-
 
 		//建立用于存放人脸的向量容器
 		vector<cv::Rect> faces(0);
@@ -225,9 +264,10 @@ void MainWindow::nextFrame()
 
 }
 
-
 void MainWindow::on_regBtn_clicked()
 {
+	ui->regBtn->setEnabled(false);
+	ui->logBtn->setEnabled(false);
 	infodlg->show();
 	this->hide();
 
@@ -235,6 +275,8 @@ void MainWindow::on_regBtn_clicked()
 
 void MainWindow::on_logBtn_clicked()
 {
+	ui->logBtn->setEnabled(false);
+	ui->regBtn->setEnabled(false);
 	if (capture.isOpened())
 		capture.release();     //decide if capture is already opened; if so,close it
 	capture.open(0);           //open the default camera
@@ -247,10 +289,11 @@ void MainWindow::on_logBtn_clicked()
 	{
 		//rate= capture.get(CV_CAP_PROP_FPS);	//using when open a vedio file
 		capture >> frame;
-
 		if (!frame.empty())
 		{
 			cascade.load("lbpcascade_frontalface.xml");
+			//cv::Ptr<EigenFaceRecognizer> modelPCA;
+			modelPCA = cv::Algorithm::load<cv::face::EigenFaceRecognizer>("MyFacePCAModel.xml");
 			image = Mat2QImage(frame);
 			ui->label->setPixmap(QPixmap::fromImage(image));
 			timer = new QTimer(this);

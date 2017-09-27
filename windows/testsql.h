@@ -47,7 +47,7 @@ bool testsql() {
 
 
 	//连接数据库  
-	if (NULL == mysql_real_connect(&mydata, "localhost", "root", "950313", "database1", 3306, NULL, 0)) {
+	if (NULL == mysql_real_connect(&mydata, "localhost", "root", "1995", "face_recogition", 3306, NULL, 0)) {
 		//这里的地址，用户名，密码，端口可以根据自己本地的情况更改  
 		cout << "mysql_real_connect() failed" << endl;
 		return false;
